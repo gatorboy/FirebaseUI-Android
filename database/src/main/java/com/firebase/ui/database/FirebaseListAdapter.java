@@ -82,6 +82,11 @@ public abstract class FirebaseListAdapter<T> extends BaseAdapter {
             public void onCancelled(DatabaseError error) {
                 FirebaseListAdapter.this.onCancelled(error);
             }
+
+            @Override
+            public void onChildChanged(int index, DataSnapshot oldSnapshot) {
+                FirebaseListAdapter.this.onChildChanged(null, -1, -1);
+            }
         });
     }
 

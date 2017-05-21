@@ -62,4 +62,6 @@ public interface ChangeEventListener {
      * @param error A description of the error that occurred
      */
     void onCancelled(DatabaseError error);
+
+    void onChildChanged(int index, DataSnapshot oldSnapshot);
 }

@@ -151,8 +151,9 @@ class FirebaseIndexArray extends FirebaseArray {
                     mDataSnapshots.add(index, snapshot);
                     notifyChangedListeners(ChangeEventListener.EventType.ADDED, index);
                 } else {
+                    DataSnapshot oldSnapshot = mDataSnapshots.get(index);
                     mDataSnapshots.set(index, snapshot);
-                    notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
+                    notifyChangedListeners(index, oldSnapshot);
                 }
             } else {
                 if (isKeyAtIndex(key, index)) {

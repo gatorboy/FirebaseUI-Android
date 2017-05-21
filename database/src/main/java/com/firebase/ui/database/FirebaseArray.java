@@ -14,6 +14,9 @@
 
 package com.firebase.ui.database;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -75,8 +78,9 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
     @Override
     public void onChildChanged(DataSnapshot snapshot, String previousChildKey) {
         int index = getIndexForKey(snapshot.getKey());
+        DataSnapshot previousSnapShot =mSnapshots.get(index);
         mSnapshots.set(index, snapshot);
-        notifyChangedListeners(ChangeEventListener.EventType.CHANGED, index);
+        notifyChangedListeners(index, previousSnapShot);
     }
 
     @Override
@@ -118,6 +122,13 @@ class FirebaseArray implements ChildEventListener, ValueEventListener {
             mListener.onChildChanged(type, index, oldIndex);
         }
     }
+
+    protected void notifyChangedListeners(int index, DataSnapshot oldSnapshot) {
+        if (mListener != null) {
+            mListener.onChildChanged(index, oldSnapshot);
+        }
+    }
+
 
     protected void notifyCancelledListeners(DatabaseError error) {
         if (mListener != null) {

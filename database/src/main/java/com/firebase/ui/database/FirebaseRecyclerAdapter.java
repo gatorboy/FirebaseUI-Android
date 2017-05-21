@@ -28,6 +28,7 @@ import com.google.firebase.database.Query;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 /**
  * This class is a generic way of backing an RecyclerView with a Firebase location.
@@ -107,6 +108,11 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
             public void onCancelled(DatabaseError error) {
                 FirebaseRecyclerAdapter.this.onCancelled(error);
             }
+
+            @Override
+            public void onChildChanged(int index, DataSnapshot oldSnapshot) {
+                FirebaseRecyclerAdapter.this.onChildChanged(index, oldSnapshot);
+            }
         });
     }
 
@@ -181,7 +187,13 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(VH viewHolder, int position) {
         T model = getItem(position);
-        populateViewHolder(viewHolder, model, position);
+        populateViewHolder(viewHolder, model, position, null);
+    }
+
+    @Override
+    public void onBindViewHolder(VH viewHolder, int position, List<Object> payload) {
+        T model = getItem(position);
+        populateViewHolder(viewHolder, model, position, payload);
     }
 
     @Override
@@ -211,6 +223,10 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
         }
     }
 
+    protected void onChildChanged(int index, DataSnapshot oldSnapshot) {
+        notifyItemChanged(index, oldSnapshot);
+    }
+
     /**
      * @see ChangeEventListener#onDataChanged()
      */
@@ -235,6 +251,7 @@ public abstract class FirebaseRecyclerAdapter<T, VH extends RecyclerView.ViewHol
      * @param viewHolder The view to populate
      * @param model      The object containing the data used to populate the view
      * @param position   The position in the list of the view being populated
+     * @param payload    The payload for populating only affected views.
      */
-    protected abstract void populateViewHolder(VH viewHolder, T model, int position);
+    protected abstract void populateViewHolder(VH viewHolder, T model, int position, List<Object> payload);
 }
